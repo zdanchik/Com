@@ -38,9 +38,9 @@ class Serial
 	/**
 	 * Constructor. Perform some checks about the OS and setserial
 	 *
-	 * @return phpSerial
+	 * @return Serial
 	 */
-	function phpSerial ()
+	public function __construct()
 	{
 		setlocale(LC_ALL, "en_US");
 
