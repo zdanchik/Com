@@ -19,7 +19,6 @@ class Reset extends SerialCommand {
 
   protected function process() {
     $this->getSerial()->sendMessage($this->prepareCommand(self::COMMAND_RESET));
-    $this->setReceivedData($this->getSerial()->readPort());
   }
 
 }

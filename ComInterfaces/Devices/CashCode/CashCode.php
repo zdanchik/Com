@@ -6,6 +6,7 @@ use ComInterfaces\ComInterfaces;
 use ComInterfaces\Devices\CashCode\Commands\Identification;
 use ComInterfaces\Devices\CashCode\Commands\Pool;
 use ComInterfaces\Devices\CashCode\Commands\Reset;
+use ComInterfaces\Devices\CashCode\Commands\Stack;
 use ComInterfaces\Interfaces\Com\Serial;
 
 class CashCode extends ComInterfaces {
@@ -55,8 +56,19 @@ class CashCode extends ComInterfaces {
     $command = new Pool($this->getInterface());
     $command->execute();
     $command->getReceivedData(function ($hex, $bin) {
-      echo base_convert($hex, 16, 2) . "\n";
+      //echo base_convert($hex, 16, 2) . "\n";
+      echo $hex . "\n";
     });
+  }
+
+  public function stack() {
+    $command = new Stack($this->getInterface());
+    $command->execute();
+    $command->getReceivedData(function ($hex, $bin) {
+      //echo base_convert($hex, 16, 2) . "\n";
+      echo $hex . "\n";
+    });
+
   }
 
 }

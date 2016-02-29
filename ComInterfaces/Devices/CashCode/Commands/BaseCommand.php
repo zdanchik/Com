@@ -9,7 +9,8 @@ abstract class BaseCommand {
   const
     COMMAND_IDENTIFICATION  = 0x37,
     COMMAND_RESET           = 0x30,
-    COMMAND_POOL            = 0x33;
+    COMMAND_POOL            = 0x33,
+    COMMAND_STACK           = 0x35;
 
   const
     ERR_NOT_VALID_COMMAND   = "ff",
