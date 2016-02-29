@@ -8,13 +8,14 @@ abstract class BaseCommand {
 
   const
     COMMAND_IDENTIFICATION  = 0x37,
-    COMMAND_RESET           = 0x30;
+    COMMAND_RESET           = 0x30,
+    COMMAND_POOL            = 0x33;
 
   const
     ERR_NOT_VALID_COMMAND   = "ff",
     ERR_ILLEGAL_COMMAND     = "30";
 
-  abstract public function execute($data = []);
+  abstract public function execute();
 
   private $receivedData = null;
   protected function setReceivedData($data) {
@@ -33,7 +34,7 @@ abstract class BaseCommand {
   }
 
 
-  public function getReceivedData($hex = false) {
+  public function getReceivedData(callable $callback) {
     //$sync = self::hex($this->receivedData[0]);
     //$adr  = self::hex($this->receivedData[1]);
     if (empty($this->receivedData))
@@ -44,11 +45,14 @@ abstract class BaseCommand {
     if (in_array($err,[ self::ERR_NOT_VALID_COMMAND, self::ERR_ILLEGAL_COMMAND]))
       throw new \Exception("Device return error state ($err) for " . get_called_class());
 
-    $str = '';
+    //$str = '';
     for ($i = 3; $i < $lng; $i++){
-      $str .=  $hex ? self::hex($this->receivedData[$i]) : $this->receivedData[$i];
+      if ($callback != null) {
+        $callback(self::hex($this->receivedData[$i]) , $this->receivedData[$i]);
+      }
+      //$str .=  $hex ? self::hex($this->receivedData[$i]) : $this->receivedData[$i];
     }
-    return $str;
+    //return $str;
   }
 
   private function hex($i) {

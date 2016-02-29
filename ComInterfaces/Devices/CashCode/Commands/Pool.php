@@ -2,9 +2,9 @@
 
 namespace ComInterfaces\Devices\CashCode\Commands;
 
-class Identification extends SerialCommand {
+class Pool extends SerialCommand {
   protected function process() {
-    $this->getSerial()->sendMessage($this->prepareCommand(self::COMMAND_IDENTIFICATION));
+    $this->getSerial()->sendMessage($this->prepareCommand(self::COMMAND_POOL));
     $this->setReceivedData($this->getSerial()->readPort());
   }
 }

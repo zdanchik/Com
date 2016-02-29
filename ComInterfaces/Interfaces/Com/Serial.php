@@ -142,20 +142,17 @@ class Serial
 	{
 		if ($this->_dState === self::SERIAL_DEVICE_OPENED)
 		{
-			trigger_error("The device is already opened", E_USER_NOTICE);
 			return true;
 		}
 
 		if ($this->_dState === self::SERIAL_DEVICE_NOTSET)
 		{
-			trigger_error("The device must be set before to be open", E_USER_WARNING);
-			return false;
+			throw new \Exception("The device must be set before to be open", E_USER_WARNING);
 		}
 
 		if (!preg_match("@^[raw]\+?b?$@", $mode))
 		{
-			trigger_error("Invalid opening mode : ".$mode.". Use fopen() modes.", E_USER_WARNING);
-			return false;
+			throw new \Exception("Invalid opening mode : ".$mode.". Use fopen() modes.", E_USER_WARNING);
 		}
 
 		$this->_dHandle = @fopen($this->_device, $mode);
@@ -168,8 +165,7 @@ class Serial
 		}
 
 		$this->_dHandle = null;
-		trigger_error("Unable to open the device", E_USER_WARNING);
-		return false;
+		throw new \Exception("Unable to open the device", E_USER_WARNING);
 	}
 
 	/**
