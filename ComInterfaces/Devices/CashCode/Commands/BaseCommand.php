@@ -10,7 +10,12 @@ abstract class BaseCommand {
     COMMAND_IDENTIFICATION  = 0x37,
     COMMAND_RESET           = 0x30,
     COMMAND_POOL            = 0x33,
-    COMMAND_STACK           = 0x35;
+    COMMAND_STACK           = 0x35,
+    COMMAND_GET_STATUS      = 0x31,
+    COMMAND_GET_BILL_TABLE  = 0x41,
+    COMMAND_ENABLE_BILL_TYPES = 0x34,
+
+    COMMAND_ACK             = 0x00;
 
   const
     ERR_NOT_VALID_COMMAND   = "ff",
@@ -24,12 +29,17 @@ abstract class BaseCommand {
   }
 
 
-  protected function prepareCommand($command) {
+  protected function prepareCommand($command, $data = []) {
     $bytes  = "";
     $bytes .= chr(0x02);
     $bytes .= chr(0x03);
-    $bytes .= chr(0x06);
+    $bytes .= chr((0x06 + count($data)) % 255);
     $bytes .= chr($command);
+    if ($data) {
+      foreach ($data as $byte) {
+        $bytes .= chr($byte);
+      }
+    }
     $bytes .= $this->crcToStr(Crc::crc16Kermit($bytes));
     return $bytes;
   }

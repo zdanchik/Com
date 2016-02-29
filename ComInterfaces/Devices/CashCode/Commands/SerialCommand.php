@@ -17,7 +17,6 @@ abstract class SerialCommand extends BaseCommand {
   }
 
   public function execute() {
-    $this->getSerial()->deviceOpen();
     $this->process();
     $this->setReceivedData($this->getSerial()->readPort());
   }

@@ -11,7 +11,7 @@ abstract class ComInterfaces {
    */
   private $interface  = null;
   abstract protected function setInterface();
-
+  abstract protected function closeInterface();
 
   /**
    * @return Serial
@@ -22,6 +22,10 @@ abstract class ComInterfaces {
 
   protected function __construct() {
     $this->interface = $this->setInterface();
+  }
+
+  public function __destruct() {
+    $this->closeInterface();
   }
 }
 
