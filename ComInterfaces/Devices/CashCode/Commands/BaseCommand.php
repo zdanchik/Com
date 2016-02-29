@@ -2,7 +2,17 @@
 
 namespace ComInterfaces\Devices\CashCode\Commands;
 
+use ComInterfaces\Devices\CashCode\Lib\Crc;
+
 abstract class BaseCommand {
+
+  const
+    COMMAND_IDENTIFICATION  = 0x37,
+    COMMAND_RESET           = 0x30;
+
+  const
+    ERR_NOT_VALID_COMMAND   = "ff",
+    ERR_ILLEGAL_COMMAND     = "30";
 
   abstract public function execute($data = []);
 
@@ -12,10 +22,27 @@ abstract class BaseCommand {
   }
 
 
+  protected function prepareCommand($command) {
+    $bytes  = "";
+    $bytes .= chr(0x02);
+    $bytes .= chr(0x03);
+    $bytes .= chr(0x06);
+    $bytes .= chr($command);
+    $bytes .= $this->crcToStr(Crc::crc16Kermit($bytes));
+    return $bytes;
+  }
+
+
   public function getReceivedData($hex = false) {
-    $sync = self::hex($this->receivedData[0]);
-    $adr  = self::hex($this->receivedData[1]);
+    //$sync = self::hex($this->receivedData[0]);
+    //$adr  = self::hex($this->receivedData[1]);
+    if (empty($this->receivedData))
+      throw new \Exception("Empty data! Not correct initialization service!");
+
     $lng  = dechex(ord($this->receivedData[2]));
+    $err  = dechex(ord($this->receivedData[3]));
+    if (in_array($err,[ self::ERR_NOT_VALID_COMMAND, self::ERR_ILLEGAL_COMMAND]))
+      throw new \Exception("Device return error state ($err) for " . get_called_class());
 
     $str = '';
     for ($i = 3; $i < $lng; $i++){
@@ -24,16 +51,6 @@ abstract class BaseCommand {
     return $str;
   }
 
-
-/*
-  public static function strToHex($string){
-    $str = '';
-    foreach($string as $elm) {
-      $str .= self::hex($elm);
-    }
-    return strToUpper($str);
-  }
-*/
   private function hex($i) {
     return substr('0'.dechex(ord($i)), -2);
   }

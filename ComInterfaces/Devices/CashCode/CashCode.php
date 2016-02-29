@@ -3,12 +3,10 @@
 namespace ComInterfaces\Devices\CashCode;
 
 use ComInterfaces\ComInterfaces;
-use ComInterfaces\Devices\CashCode\Commands\DeviceInfo;
 use ComInterfaces\Devices\CashCode\Commands\Identification;
+use ComInterfaces\Devices\CashCode\Commands\Reset;
 
 class CashCode extends ComInterfaces {
-  const
-    COMMAND_IDENTIFICATION = 1;
 
   private static $_instance   = null;
   public static function getInstance() {
@@ -20,16 +18,15 @@ class CashCode extends ComInterfaces {
 
 
   protected function setInterface() {
-    $command = new Identification();
-    //echo $command->getReceivedHexData();
+    $command = new Reset();
     return $command->execute([
       'port' => "/dev/ttyUSB0"
     ]);
   }
 
 
-  public function getDeviceInfo() {
-    $command = new DeviceInfo($this->getInterface());
+  public function getIdentification() {
+    $command = new Identification($this->getInterface());
     $command->execute();
     return $command->getReceivedData();
   }
