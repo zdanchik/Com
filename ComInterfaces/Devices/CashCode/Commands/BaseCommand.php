@@ -3,16 +3,39 @@
 namespace ComInterfaces\Devices\CashCode\Commands;
 
 abstract class BaseCommand {
-  abstract public function execute($data);
 
-  public static function strToHex($string){
-    $hex = '';
-    for ($i=0; $i<strlen($string); $i++){
-      $ord = ord($string[$i]);
-      $hexCode = dechex($ord);
-      $hex .= substr('0'.$hexCode, -2);
+  abstract public function execute($data = []);
+
+  private $receivedData = null;
+  protected function setReceivedData($data) {
+    $this->receivedData = $data;
+  }
+
+
+  public function getReceivedData($hex = false) {
+    $sync = self::hex($this->receivedData[0]);
+    $adr  = self::hex($this->receivedData[1]);
+    $lng  = dechex(ord($this->receivedData[2]));
+
+    $str = '';
+    for ($i = 3; $i < $lng; $i++){
+      $str .=  $hex ? self::hex($this->receivedData[$i]) : $this->receivedData[$i];
     }
-    return strToUpper($hex);
+    return $str;
+  }
+
+
+/*
+  public static function strToHex($string){
+    $str = '';
+    foreach($string as $elm) {
+      $str .= self::hex($elm);
+    }
+    return strToUpper($str);
+  }
+*/
+  private function hex($i) {
+    return substr('0'.dechex(ord($i)), -2);
   }
 
   public static function hexToStr($hex){

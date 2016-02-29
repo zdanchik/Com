@@ -7,7 +7,7 @@ use ComInterfaces\Interfaces\Com\Serial;
 
 class Identification extends BaseCommand {
 
-  public function execute($data) {
+  public function execute($data = []) {
     $port = isset($data['port']) ? $data['port'] : null;
     if (!$port)
       throw new \Exception('You must change device port!');
@@ -35,8 +35,10 @@ class Identification extends BaseCommand {
 
     $bytes .= $this->crcToStr(Crc::crc16Kermit($bytes));    //CALC CRC16
 
+
     $serial->sendMessage($bytes);
-    $read = $serial->readPort();
-    return "SND: {$this->strToHex($bytes)} \tRCV: {$this->strToHex($read)} \n";
+    $this->setReceivedData($serial->readPort());
+    return $serial;
   }
+
 }
