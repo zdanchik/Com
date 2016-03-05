@@ -94,7 +94,7 @@ class CashCode extends ComInterfaces {
     $command->execute();
   }
 
-  public function poolAck() {
+  public function poolAck(callable $pull) {
     $command = new Pool($this->getInterface());
     $command->execute();
     $command->getReceivedData(function ($hex, $bin) {
@@ -249,8 +249,18 @@ class CashCode extends ComInterfaces {
 
     $command = new Pool($this->getInterface());
     $command->execute();
-    $command->getReceivedData(function ($hex, $bin) {
+    $command->getReceivedData(function ($hex, $bin, $i) use ($pull) {
       //echo base_convert($hex, 16, 2) . "\n";
+      if ($i == 4 && $pull) {
+        switch ($hex) {
+          case 2:
+            $pull(10);
+            break;
+          case 4:
+            $pull(100);
+            break;
+        }
+      }
       echo $hex . " ";
     });
 
@@ -267,7 +277,7 @@ class CashCode extends ComInterfaces {
     echo "-14\n";
     $command = new Pool($this->getInterface());
     $command->execute();
-    $command->getReceivedData(function ($hex, $bin) {
+    $command->getReceivedData(function ($hex, $bin, $i) {
       //echo base_convert($hex, 16, 2) . "\n";
       echo $hex . " ";
     });

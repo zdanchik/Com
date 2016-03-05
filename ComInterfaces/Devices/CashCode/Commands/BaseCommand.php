@@ -59,7 +59,7 @@ abstract class BaseCommand {
     //$str = '';
     for ($i = 3; $i < $lng; $i++){
       if ($callback != null) {
-        $callback(self::hex($this->receivedData[$i]) , $this->receivedData[$i]);
+        $callback(self::hex($this->receivedData[$i]) , $this->receivedData[$i], $i);
       }
       //$str .=  $hex ? self::hex($this->receivedData[$i]) : $this->receivedData[$i];
     }
